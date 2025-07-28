@@ -44,69 +44,24 @@ body {
   bottom: 0;
 }
 
-/* אנימציה ברקע מתקדמת */
+/* אנימציה ברקע פשוטה */
 .background-animation {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: 
-    radial-gradient(circle at 20% 50%, rgba(255, 107, 107, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(78, 205, 196, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 40% 80%, rgba(69, 183, 209, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 60% 30%, rgba(255, 217, 61, 0.3) 0%, transparent 50%),
-    linear-gradient(135deg, #667eea 0%, #764ba2 25%, #667eea 50%, #764ba2 75%, #667eea 100%);
-  background-size: 400% 400%, 300% 300%, 350% 350%, 280% 280%, 200% 200%;
-  animation: 
-    gradientShift 8s ease infinite,
-    bubbleFloat1 12s ease-in-out infinite,
-    bubbleFloat2 15s ease-in-out infinite reverse,
-    bubbleFloat3 10s ease-in-out infinite,
-    gradientPulse 6s ease-in-out infinite;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-size: 100% 100%;
   z-index: -1;
 }
 
 .background-animation::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    radial-gradient(circle at 70% 70%, rgba(255, 182, 193, 0.4) 0%, transparent 30%),
-    radial-gradient(circle at 30% 20%, rgba(173, 216, 230, 0.4) 0%, transparent 35%),
-    radial-gradient(circle at 90% 40%, rgba(255, 239, 213, 0.4) 0%, transparent 25%);
-  background-size: 250% 250%, 300% 300%, 200% 200%;
-  animation: 
-    floatingBubbles 20s linear infinite,
-    colorShift 14s ease-in-out infinite;
-  opacity: 0.7;
+  display: none;
 }
 
 .background-animation::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    conic-gradient(from 0deg at 50% 50%, 
-      transparent 0deg, 
-      rgba(255, 107, 107, 0.1) 45deg, 
-      transparent 90deg, 
-      rgba(78, 205, 196, 0.1) 135deg, 
-      transparent 180deg, 
-      rgba(69, 183, 209, 0.1) 225deg, 
-      transparent 270deg, 
-      rgba(255, 217, 61, 0.1) 315deg, 
-      transparent 360deg);
-  animation: 
-    rotate 30s linear infinite,
-    pulseGlow 8s ease-in-out infinite;
-  opacity: 0.5;
+  display: none;
 }
 
 @keyframes gradientShift {
@@ -428,15 +383,9 @@ body {
   }
 }
 
-/* בלונים מעופפים */
+/* בלונים מעופפים - מבוטלים */
 .floating-elements {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
+  display: none;
 }
 
 .balloon {
@@ -687,60 +636,7 @@ body {
 
 /* תמיכה מלאה במובייל */
 @media (max-width: 768px) {
-  /* ביטול אנימציית הרקע במובייל למניעת ריצוד */
-  .background-animation {
-    animation: none !important;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    background-size: 100% 100% !important;
-  }
-  
-  .background-animation::before,
-  .background-animation::after {
-    animation: none !important;
-    opacity: 0.3 !important;
-  }
-  
-  /* ביטול אנימציות מעופפות במובייל */
-  .floating-elements > * {
-    animation: none !important;
-    transform: none !important;
-    opacity: 0.6 !important;
-  }
-  
-  /* ביטול אנימציות נוספות שגורמות לריצוד */
-  .birthday-card {
-    animation: none !important;
-  }
-  
-  .main-title {
-    animation: none !important;
-  }
-  
-  .age-number {
-    animation: none !important;
-  }
-  
-  .age-text {
-    animation: none !important;
-  }
-  
-  .photo-frame {
-    animation: none !important;
-  }
-  
-  .photo-frame:hover {
-    transform: none !important;
-  }
-  
-  .photo-frame::before {
-    animation: none !important;
-  }
-  
-  .music-btn {
-    animation: none !important;
-  }
-  
-  /* כל האנימציות כלליות */
+  /* כל האנימציות כבר מבוטלות גלובלית */
   * {
     animation: none !important;
     transition: none !important;
