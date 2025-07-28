@@ -299,15 +299,18 @@ async function toggleMusic() {
   }
   
   // השתמש רק במשתנה של המחלקה כמקור האמת
-  console.log('🎵 musicPlayer.isPlaying:', musicPlayer.isPlaying);
+  console.log('🎵 musicPlayer.isPlaying לפני פעולה:', musicPlayer.isPlaying);
   
   if (musicPlayer.isPlaying) {
     // עוצרים מוזיקה
     console.log('🔇 עוצר מוזיקה...');
-    musicPlayer.stop();
-    musicBtn.textContent = '🎵 מוזיקה 🎵';
-    musicBtn.style.background = 'linear-gradient(45deg, var(--primary-color), var(--secondary-color))';
-    console.log('✅ מוזיקה נעצרה - isPlaying:', musicPlayer.isPlaying);
+    const stopSuccess = musicPlayer.stop();
+    
+    if (stopSuccess) {
+      musicBtn.textContent = '🎵 מוזיקה 🎵';
+      musicBtn.style.background = 'linear-gradient(45deg, var(--primary-color), var(--secondary-color))';
+      console.log('✅ מוזיקה נעצרה - isPlaying אחרי עצירה:', musicPlayer.isPlaying);
+    }
   } else {
     // מפעילים מוזיקה
     console.log('🎵 מפעיל מוזיקה...');
@@ -321,7 +324,7 @@ async function toggleMusic() {
         musicBtn.textContent = '🔇 עצור מוזיקה 🔇';
         musicBtn.style.background = 'linear-gradient(45deg, #ff4757, #ff6b6b)';
         playBirthdayAnimation();
-        console.log('✅ מוזיקה הופעלה - isPlaying:', musicPlayer.isPlaying);
+        console.log('✅ מוזיקה הופעלה - isPlaying אחרי הפעלה:', musicPlayer.isPlaying);
       } else {
         musicBtn.textContent = '❌ שגיאה במוזיקה';
         console.error('❌ הפעלת מוזיקה נכשלה');

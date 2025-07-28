@@ -192,19 +192,24 @@ class BirthdayMusicPlayer {
           playPromise
             .then(() => {
               console.log('✅ ניגון התחיל בהצלחה');
+              this.isPlaying = true; // עדכון מיידי של הסטטוס
+              console.log('✅ isPlaying עודכן ל-true');
               resolve();
             })
             .catch((error) => {
               console.error('❌ שגיאה בהתחלת ניגון:', error);
+              this.isPlaying = false;
               reject(error);
             });
         } else {
           // דפדפנים ישנים
+          this.isPlaying = true;
+          console.log('✅ isPlaying עודכן ל-true (דפדפן ישן)');
           resolve();
         }
       });
-      this.isPlaying = true;
-      console.log('✅ שיר מתחיל לנגן בהצלחה');
+      
+      console.log('✅ שיר מתחיל לנגן בהצלחה - isPlaying:', this.isPlaying);
       return true;
     } catch (error) {
       console.error('❌ שגיאה בניגון שיר:', error);
@@ -275,9 +280,6 @@ class BirthdayMusicPlayer {
     console.log('🔇 stop() נקרא');
     console.log('🔇 isPlaying לפני עצירה:', this.isPlaying);
     
-    // סמן שהמשתמש עצר ידנית
-    this.isPlaying = false;
-    
     if (this.currentAudio) {
       console.log('🔇 עוצר אודיו...');
       this.currentAudio.pause();
@@ -293,8 +295,12 @@ class BirthdayMusicPlayer {
       this.currentAudio = null;
     }
     
+    // חשוב! סמן שהמשתמש עצר ידנית - תמיד לפני הלוג
+    this.isPlaying = false;
     this.onSongEnded = null;
+    
     console.log('✅ מוזיקה נעצרה - isPlaying:', this.isPlaying);
+    return true; // מחזיר הצלחה
   }
 
   // ניקוי משאבים
