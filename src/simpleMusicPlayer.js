@@ -138,17 +138,25 @@ class BirthdayMusicPlayer {
         console.log('🎵 התקדמות טעינה');
       });
       
-      // כשהשיר נגמר, נניגן אחר (עם הגנה מפני שגיאות)
+      // כשהשיר נגמר, נניגן אחר (רק אם המשתמש לא עצר ידנית)
       this.onSongEnded = async () => {
-        console.log('🎵 שיר נגמר, מחליף לשיר חדש...');
-        if (this.isPlaying) {
-          const waitTime = this.isMobile ? 2000 : 1000; // זמן המתנה ארוך יותר במובייל
+        console.log('🎵 שיר נגמר');
+        console.log('🎵 isPlaying לפני בדיקה:', this.isPlaying);
+        
+        // בדיקה אם המשתמש עצר ידנית
+        if (this.isPlaying && this.currentAudio) {
+          console.log('🎵 מחליף לשיר חדש...');
+          const waitTime = this.isMobile ? 2000 : 1000;
           setTimeout(() => {
-            this.playRandomSong().catch(err => {
-              console.error('❌ שגיאה בהחלפת שיר:', err);
-              this.isPlaying = false;
-            });
+            if (this.isPlaying) { // בדיקה נוספת
+              this.playRandomSong().catch(err => {
+                console.error('❌ שגיאה בהחלפת שיר:', err);
+                this.isPlaying = false;
+              });
+            }
           }, waitTime);
+        } else {
+          console.log('🔇 לא מחליף שיר כי המשתמש עצר ידנית');
         }
       };
       
@@ -264,21 +272,29 @@ class BirthdayMusicPlayer {
 
   // עצירת מוזיקה
   stop() {
-    console.log('🔇 עוצר מוזיקה...');
+    console.log('🔇 stop() נקרא');
+    console.log('🔇 isPlaying לפני עצירה:', this.isPlaying);
+    
+    // סמן שהמשתמש עצר ידנית
     this.isPlaying = false;
     
     if (this.currentAudio) {
+      console.log('🔇 עוצר אודיו...');
       this.currentAudio.pause();
+      this.currentAudio.currentTime = 0;
+      
       // הסרת event listeners למניעת דליפת זיכרון
       if (this.onSongEnded) {
         this.currentAudio.removeEventListener('ended', this.onSongEnded);
       }
       this.currentAudio.removeEventListener('error', this.onSongEnded);
-      this.currentAudio.currentTime = 0; // איפוס המיקום
+      
+      // ניקוי מלא
       this.currentAudio = null;
     }
     
-    console.log('✅ מוזיקה נעצרה');
+    this.onSongEnded = null;
+    console.log('✅ מוזיקה נעצרה - isPlaying:', this.isPlaying);
   }
 
   // ניקוי משאבים
