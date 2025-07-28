@@ -9,11 +9,29 @@ class BirthdayMusicPlayer {
     this.retryCount = 0; // מונה ניסיונות חוזרים
     this.maxRetries = 3; // מקסימום ניסיונות
     this.isMobile = this.detectMobile(); // זיהוי מובייל
+    
+    // הגדרות מיוחדות למובייל
+    if (this.isMobile) {
+      this.volume = 0.5; // עוצמה נמוכה יותר למובייל
+      console.log('📱 זוהה מובייל - הגדרות מיוחדות הופעלו');
+    }
   }
   
-  // זיהוי אם זה מובייל
+  // זיהוי אם זה מובייל - משופר
   detectMobile() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const isSmallScreen = window.innerWidth <= 768;
+    
+    const result = isMobileUA || (isTouchDevice && isSmallScreen);
+    console.log('📱 בדיקת מובייל:', {
+      userAgent: isMobileUA,
+      touchDevice: isTouchDevice,
+      smallScreen: isSmallScreen,
+      result: result
+    });
+    
+    return result;
   }
 
   // גילוי קבצי מוזיקה בתיקיה
@@ -109,23 +127,56 @@ class BirthdayMusicPlayer {
       console.log('🎵 מנגן שיר:', songPath);
       this.currentAudio = new Audio(songPath);
       
-      // הגדרת volume מותאמת למובייל
+      // אסטרטגיה מיוחדת לטעינה במובייל
       if (this.isMobile) {
-        this.currentAudio.volume = Math.min(this.volume, 0.8); // נמוך יותר במובייל
-        console.log('📱 מובייל זוהה - volume מותאם:', this.currentAudio.volume);
+        console.log('📱 הכנת אודיו למובייל...');
+        this.currentAudio.load(); // כפיית טעינה מחדש במובייל
+        
+        // המתנה לטעינה במובייל
+        await new Promise((resolve) => {
+          if (this.currentAudio.readyState >= 2) {
+            console.log('📱 אודיו כבר טעון במובייל');
+            resolve();
+          } else {
+            this.currentAudio.addEventListener('loadeddata', () => {
+              console.log('📱 נתוני אודיו נטענו במובייל');
+              resolve();
+            }, { once: true });
+            this.currentAudio.addEventListener('canplay', () => {
+              console.log('📱 אודיו מוכן לניגון במובייל');
+              resolve();
+            }, { once: true });
+            // timeout אם הטעינה נתקעת
+            setTimeout(() => {
+              console.log('📱 timeout טעינה - ממשיך בכל זאת');
+              resolve();
+            }, 2000);
+          }
+        });
+      }
+      
+      // הגדרות מיוחדות למובייל
+      if (this.isMobile) {
+        console.log('📱 מגדיר אודיו למובייל...');
+        this.currentAudio.volume = 0.3; // עוצמה נמוכה מאוד למובייל
+        this.currentAudio.preload = 'metadata'; // טעינה חלקית בלבד
+        this.currentAudio.crossOrigin = null; // ביטול CORS למובייל
+        
+        // הגדרות למניעת קטיעות במובייל
+        this.currentAudio.setAttribute('playsinline', 'true');
+        this.currentAudio.setAttribute('webkit-playsinline', 'true');
+        this.currentAudio.muted = false;
+        
+        console.log('📱 הגדרות מובייל הושלמו - volume:', this.currentAudio.volume);
       } else {
         this.currentAudio.volume = this.volume;
+        this.currentAudio.preload = 'auto';
+        this.currentAudio.crossOrigin = 'anonymous';
       }
       
       this.currentAudio.loop = false;
       
-      // הגדרות מיוחדות למובייל
-      this.currentAudio.preload = 'auto';
-      if (!this.isMobile) {
-        this.currentAudio.crossOrigin = 'anonymous';
-      }
-      
-      // טיפול בהשהיות ובאגר
+      // טיפול באירועי טעינה
       this.currentAudio.addEventListener('canplaythrough', () => {
         console.log('🎵 אודיו מוכן לניגון');
       });
@@ -134,9 +185,24 @@ class BirthdayMusicPlayer {
         console.log('🎵 התחלת טעינת אודיו');
       });
       
-      this.currentAudio.addEventListener('progress', () => {
-        console.log('🎵 התקדמות טעינה');
+      this.currentAudio.addEventListener('loadeddata', () => {
+        console.log('🎵 נתוני אודיו נטענו');
       });
+      
+      // מיוחד למובייל - בדיקת חיבור
+      if (this.isMobile) {
+        this.currentAudio.addEventListener('stalled', () => {
+          console.log('📱 אודיו נתקע במובייל - מנסה שוב...');
+        });
+        
+        this.currentAudio.addEventListener('waiting', () => {
+          console.log('📱 ממתין לנתונים במובייל...');
+        });
+        
+        this.currentAudio.addEventListener('suspend', () => {
+          console.log('📱 טעינת אודיו הושעתה במובייל');
+        });
+      }
       
       // כשהשיר נגמר, נניגן אחר (רק אם המשתמש לא עצר ידנית)
       this.onSongEnded = async () => {
@@ -184,30 +250,77 @@ class BirthdayMusicPlayer {
         console.log('⏳ ממתין לנתונים נוספים...');
       });
 
-      // ניסיון ניגון עם זמן המתנה
-      await new Promise((resolve, reject) => {
-        const playPromise = this.currentAudio.play();
+      // ניסיון ניגון מיוחד למובייל
+      if (this.isMobile) {
+        console.log('📱 ניסיון ניגון במובייל...');
         
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              console.log('✅ ניגון התחיל בהצלחה');
-              this.isPlaying = true; // עדכון מיידי של הסטטוס
-              console.log('✅ isPlaying עודכן ל-true');
+        // המתנה ארוכה יותר למובייל
+        await new Promise((resolve, reject) => {
+          // תחילה ניסיון לטעון
+          const loadPromise = new Promise((loadResolve) => {
+            if (this.currentAudio.readyState >= 2) {
+              console.log('📱 אודיו כבר טעון במובייל');
+              loadResolve();
+            } else {
+              this.currentAudio.addEventListener('canplay', () => {
+                console.log('📱 אודיו מוכן לניגון במובייל');
+                loadResolve();
+              }, { once: true });
+              
+              // אם לא נטען תוך 3 שניות, ננסה בכל זאת
+              setTimeout(() => {
+                console.log('📱 timeout - ננסה לנגן בכל זאת');
+                loadResolve();
+              }, 3000);
+            }
+          });
+          
+          loadPromise.then(() => {
+            const playPromise = this.currentAudio.play();
+            
+            if (playPromise !== undefined) {
+              playPromise
+                .then(() => {
+                  console.log('✅ ניגון התחיל בהצלחה במובייל');
+                  this.isPlaying = true;
+                  resolve();
+                })
+                .catch((error) => {
+                  console.error('❌ שגיאה בהתחלת ניגון במובייל:', error);
+                  this.isPlaying = false;
+                  reject(error);
+                });
+            } else {
+              this.isPlaying = true;
+              console.log('✅ ניגון הופעל (דפדפן ישן במובייל)');
               resolve();
-            })
-            .catch((error) => {
-              console.error('❌ שגיאה בהתחלת ניגון:', error);
-              this.isPlaying = false;
-              reject(error);
-            });
-        } else {
-          // דפדפנים ישנים
-          this.isPlaying = true;
-          console.log('✅ isPlaying עודכן ל-true (דפדפן ישן)');
-          resolve();
-        }
-      });
+            }
+          });
+        });
+      } else {
+        // ניגון רגיל למחשב
+        await new Promise((resolve, reject) => {
+          const playPromise = this.currentAudio.play();
+          
+          if (playPromise !== undefined) {
+            playPromise
+              .then(() => {
+                console.log('✅ ניגון התחיל בהצלחה');
+                this.isPlaying = true;
+                resolve();
+              })
+              .catch((error) => {
+                console.error('❌ שגיאה בהתחלת ניגון:', error);
+                this.isPlaying = false;
+                reject(error);
+              });
+          } else {
+            this.isPlaying = true;
+            console.log('✅ ניגון הופעל (דפדפן ישן)');
+            resolve();
+          }
+        });
+      }
       
       console.log('✅ שיר מתחיל לנגן בהצלחה - isPlaying:', this.isPlaying);
       return true;
