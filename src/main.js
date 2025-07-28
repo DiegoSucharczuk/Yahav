@@ -298,10 +298,14 @@ async function toggleMusic() {
     return;
   }
   
-  console.log('🎵 סטטוס מוזיקה נוכחי:', musicPlaying);
+  console.log('🎵 סטטוס מוזיקה נוכחי (main.js):', musicPlaying);
+  console.log('🎵 סטטוס מוזיקה נוכחי (musicPlayer):', musicPlayer.isPlaying);
   console.log('🎵 musicPlayer:', musicPlayer);
   
-  if (!musicPlaying) {
+  // השתמש בסטטוס של המחלקה כמקור האמת
+  const isCurrentlyPlaying = musicPlayer.isPlaying;
+  
+  if (!isCurrentlyPlaying) {
     // הפעלת מוזיקה
     musicBtn.textContent = '🎵 טוען... 🎵';
     musicBtn.disabled = true;
@@ -311,7 +315,7 @@ async function toggleMusic() {
       const result = await musicPlayer.play();
       console.log('🎵 תוצאת הפעלת מוזיקה:', result);
       
-      if (result) {
+      if (result && musicPlayer.isPlaying) {
         musicPlaying = true;
         musicBtn.textContent = '🔇 עצור מוזיקה 🔇';
         musicBtn.style.background = 'linear-gradient(45deg, #ff4757, #ff6b6b)';
@@ -320,10 +324,12 @@ async function toggleMusic() {
       } else {
         musicBtn.textContent = '❌ שגיאה במוזיקה';
         console.error('❌ הפעלת מוזיקה נכשלה');
+        musicPlaying = false;
       }
     } catch (error) {
       console.error('❌ שגיאה בהפעלת מוזיקה:', error);
       musicBtn.textContent = '❌ שגיאה במוזיקה';
+      musicPlaying = false;
     }
     
     musicBtn.disabled = false;

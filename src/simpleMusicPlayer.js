@@ -146,12 +146,12 @@ class BirthdayMusicPlayer {
   // התחלת מוזיקה
   async play() {
     console.log('🎵 BirthdayMusicPlayer.play() נקרא');
-    console.log('🎵 isPlaying:', this.isPlaying);
+    console.log('🎵 isPlaying בתחילה:', this.isPlaying);
     
+    // אם מוזיקה כבר פועלת - לא עושים כלום ומחזירים false
     if (this.isPlaying) {
-      console.log('🔇 מוזיקה כבר פועלת, עוצר...');
-      this.stop();
-      return false; // החזרת false כשעוצרים מוזיקה
+      console.log('🔇 מוזיקה כבר פועלת - לא מבצע פעולה');
+      return false;
     }
 
     try {
@@ -164,6 +164,7 @@ class BirthdayMusicPlayer {
         this.retryCount = 0; // איפוס מונה ניסיונות
         const result = await this.playRandomSong();
         console.log('🎵 תוצאת ניגון:', result);
+        console.log('🎵 isPlaying אחרי ניסיון ניגון:', this.isPlaying);
         return result;
       }
       
