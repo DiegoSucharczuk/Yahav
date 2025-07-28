@@ -34,19 +34,18 @@ class PhotoManager {
     return this.availableImages.length > 0;
   }
 
-  getRandomImage() {
-    if (this.availableImages.length === 0) return null;
-    const randomIndex = Math.floor(Math.random() * this.availableImages.length);
-    const randomImage = this.availableImages[randomIndex];
-    console.log(`🎲 בחירת תמונה רנדומלית: ${randomIndex + 1}/${this.availableImages.length} - ${randomImage}`);
-    return randomImage;
-  }
-
   getNextImage() {
     if (this.availableImages.length === 0) return null;
     
     this.currentImageIndex = (this.currentImageIndex + 1) % this.availableImages.length;
-    return this.availableImages[this.currentImageIndex];
+    const nextImage = this.availableImages[this.currentImageIndex];
+    console.log(`📸 תמונה הבאה בסדר: ${this.currentImageIndex + 1}/${this.availableImages.length} - ${nextImage}`);
+    return nextImage;
+  }
+
+  // שינוי: לא משתמשים יותר ברנדומלי
+  getRandomImage() {
+    return this.getNextImage();
   }
 
   async loadRandomImage(container) {
@@ -112,12 +111,12 @@ class PhotoManager {
     
     console.log(`📷 מתחיל סיבוב עם ${this.availableImages.length} תמונות`);
     
-    // התחלת סיבוב חדש
+    // התחלת סיבוב חדש - עכשיו בסדר רציף
     this.rotationInterval = setInterval(() => {
-      const randomImage = this.getRandomImage();
-      if (randomImage) {
-        console.log('🖼️ מחליף לתמונה:', randomImage);
-        this.displayImage(container, randomImage);
+      const nextImage = this.getNextImage();
+      if (nextImage) {
+        console.log('🖼️ מחליף לתמונה הבאה בסדר:', nextImage);
+        this.displayImage(container, nextImage);
         this.flashEffect(container);
       }
     }, interval);

@@ -4,6 +4,7 @@ class BirthdayMusicPlayer {
     this.isPlaying = false;
     this.currentAudio = null;
     this.musicFiles = [];
+    this.currentSongIndex = 0;  // אינדקס השיר הנוכחי
     this.volume = 0.7;
     this.onSongEnded = null; // מטפל לסיום שיר
     this.retryCount = 0; // מונה ניסיונות חוזרים
@@ -100,15 +101,23 @@ class BirthdayMusicPlayer {
     return this.musicFiles.length > 0;
   }
 
-  // בחירת שיר רנדומלי
-  getRandomSong() {
+  // בחירת השיר הבא בסדר
+  getNextSong() {
     if (this.musicFiles.length === 0) return null;
-    const randomIndex = Math.floor(Math.random() * this.musicFiles.length);
-    return this.musicFiles[randomIndex];
+    
+    this.currentSongIndex = (this.currentSongIndex + 1) % this.musicFiles.length;
+    const nextSong = this.musicFiles[this.currentSongIndex];
+    console.log(`🎵 שיר הבא בסדר: ${this.currentSongIndex + 1}/${this.musicFiles.length} - ${nextSong}`);
+    return nextSong;
   }
 
-  // ניגון שיר
-  async playRandomSong() {
+  // שינוי: לא משתמשים יותר ברנדומלי
+  getRandomSong() {
+    return this.getNextSong();
+  }
+
+  // ניגון השיר הבא בסדר
+  async playNextSong() {
     // עצירת השיר הנוכחי אם קיים
     if (this.currentAudio) {
       this.currentAudio.pause();
@@ -116,7 +125,7 @@ class BirthdayMusicPlayer {
       this.currentAudio = null;
     }
 
-    const songPath = this.getRandomSong();
+    const songPath = this.getNextSong();
     if (!songPath) {
       console.log('❌ לא נמצא שיר לניגון');
       this.isPlaying = false;
@@ -124,7 +133,7 @@ class BirthdayMusicPlayer {
     }
 
     try {
-      console.log('🎵 מנגן שיר:', songPath);
+      console.log('🎵 מנגן שיר הבא בסדר:', songPath);
       this.currentAudio = new Audio(songPath);
       
       // אסטרטגיה מיוחדת לטעינה במובייל
@@ -273,14 +282,14 @@ class BirthdayMusicPlayer {
                 // המתנה נוספת למובייל
                 setTimeout(() => {
                   if (this.isPlaying) {
-                    this.playRandomSong().catch(err => {
+                    this.playNextSong().catch(err => {
                       console.error('❌ שגיאה בהחלפת שיר במובייל:', err);
                       this.isPlaying = false;
                     });
                   }
                 }, 1000);
               } else {
-                this.playRandomSong().catch(err => {
+                this.playNextSong().catch(err => {
                   console.error('❌ שגיאה בהחלפת שיר:', err);
                   this.isPlaying = false;
                 });
@@ -302,7 +311,7 @@ class BirthdayMusicPlayer {
         // ניסיון לנגן שיר אחר אחרי זמן ארוך יותר
         setTimeout(() => {
           if (this.isPlaying) {
-            this.playRandomSong().catch(err => console.error('❌ שגיאה בחזרה על ניגון:', err));
+            this.playNextSong().catch(err => console.error('❌ שגיאה בחזרה על ניגון:', err));
           }
         }, 2000);
       });
@@ -426,7 +435,7 @@ class BirthdayMusicPlayer {
     try {
       const hasMusic = await this.discoverMusic();
       if (hasMusic) {
-        const result = await this.playRandomSong();
+        const result = await this.playNextSong();
         return result;
       }
       return false;
@@ -455,7 +464,7 @@ class BirthdayMusicPlayer {
       
       if (hasMusic) {
         this.retryCount = 0; // איפוס מונה ניסיונות
-        const result = await this.playRandomSong();
+        const result = await this.playNextSong();
         console.log('🎵 תוצאת ניגון:', result);
         console.log('🎵 isPlaying אחרי ניסיון ניגון:', this.isPlaying);
         return result;
