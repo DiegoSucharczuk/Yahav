@@ -302,6 +302,7 @@ async function toggleMusic() {
   console.log('🎵 musicPlayer:', musicPlayer);
   
   if (!musicPlaying) {
+    // הפעלת מוזיקה
     musicBtn.textContent = '🎵 טוען... 🎵';
     musicBtn.disabled = true;
     
@@ -327,6 +328,7 @@ async function toggleMusic() {
     
     musicBtn.disabled = false;
   } else {
+    // עצירת מוזיקה
     console.log('🔇 עוצר מוזיקה...');
     try {
       musicPlayer.stop();

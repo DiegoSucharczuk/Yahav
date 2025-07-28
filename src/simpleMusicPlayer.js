@@ -151,7 +151,7 @@ class BirthdayMusicPlayer {
     if (this.isPlaying) {
       console.log('🔇 מוזיקה כבר פועלת, עוצר...');
       this.stop();
-      return true;
+      return false; // החזרת false כשעוצרים מוזיקה
     }
 
     try {
