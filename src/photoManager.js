@@ -3,12 +3,12 @@ class PhotoManager {
   constructor() {
     // ננסה לגלות תמונות אוטומטית
     this.imageFiles = [
-      '/images/Yahav.jpeg',
-      '/images/WhatsApp Image 2025-07-28 at 07.42.56.jpeg',
-      '/images/WhatsApp Image 2025-07-28 at 07.42.56 (1).jpeg',
-      '/images/WhatsApp Image 2025-07-28 at 07.42.56 (2).jpeg',
-      '/images/WhatsApp Image 2025-07-28 at 07.42.56 (3).jpeg',
-      '/images/WhatsApp Image 2025-07-28 at 07.42.57.jpeg'
+      './images/Yahav.jpeg',
+      './images/WhatsApp Image 2025-07-28 at 07.42.56.jpeg',
+      './images/WhatsApp Image 2025-07-28 at 07.42.56 (1).jpeg',
+      './images/WhatsApp Image 2025-07-28 at 07.42.56 (2).jpeg',
+      './images/WhatsApp Image 2025-07-28 at 07.42.56 (3).jpeg',
+      './images/WhatsApp Image 2025-07-28 at 07.42.57.jpeg'
     ];
     this.availableImages = [];
     this.currentImageIndex = 0;

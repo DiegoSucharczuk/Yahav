@@ -39,10 +39,10 @@ class BirthdayMusicPlayer {
     for (const fileName of knownFiles) {
       try {
         console.log('🔍 בודק קובץ ידוע:', fileName);
-        const response = await fetch(`/music/${fileName}`, { method: 'HEAD' });
+        const response = await fetch(`./music/${fileName}`, { method: 'HEAD' });
         if (response.ok) {
           console.log('✅ נמצא קובץ:', fileName);
-          this.musicFiles.push(`/music/${fileName}`);
+          this.musicFiles.push(`./music/${fileName}`);
         } else {
           console.log('❌ לא נמצא קובץ ידוע:', fileName);
         }
@@ -61,10 +61,10 @@ class BirthdayMusicPlayer {
     for (const fileName of possibleFiles) {
       try {
         console.log('🔍 בודק קובץ אפשרי:', fileName);
-        const response = await fetch(`/music/${fileName}`, { method: 'HEAD' });
+        const response = await fetch(`./music/${fileName}`, { method: 'HEAD' });
         if (response.ok) {
           console.log('✅ נמצא קובץ אפשרי:', fileName);
-          this.musicFiles.push(`/music/${fileName}`);
+          this.musicFiles.push(`./music/${fileName}`);
         }
       } catch (error) {
         console.log('❌ שגיאה בבדיקת קובץ אפשרי:', fileName, error.message);

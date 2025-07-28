@@ -184,7 +184,7 @@ function createBirthdayCard() {
       <section class="photo-section">
         <div class="photo-frame">
           <div class="photo-placeholder-content" id="photoContainer">
-            <img src="/images/Yahav.jpeg" alt="יהב" class="birthday-photo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 15px;" />
+            <img src="./images/Yahav.jpeg" alt="יהב" class="birthday-photo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 15px;" />
           </div>
         </div>
       </section>
