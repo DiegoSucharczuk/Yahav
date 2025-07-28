@@ -1,0 +1,931 @@
+/* צבעים ומשתנים */
+:root {
+  --primary-color: #ff6b6b;
+  --secondary-color: #4ecdc4;
+  --accent-color: #45b7d1;
+  --gold-color: #ffd93d;
+  --text-dark: #2c3e50;
+  --text-light: #ffffff;
+  --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --birthday-gradient: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #ffd93d);
+}
+
+/* איפוס ובסיס */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Rubik', sans-serif;
+  background: var(--gradient-bg);
+  color: var(--text-dark);
+  overflow: hidden;
+  min-height: 100vh;
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+/* אנימציה ברקע מתקדמת */
+.background-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(255, 107, 107, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(78, 205, 196, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(69, 183, 209, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 60% 30%, rgba(255, 217, 61, 0.3) 0%, transparent 50%),
+    linear-gradient(135deg, #667eea 0%, #764ba2 25%, #667eea 50%, #764ba2 75%, #667eea 100%);
+  background-size: 400% 400%, 300% 300%, 350% 350%, 280% 280%, 200% 200%;
+  animation: 
+    gradientShift 8s ease infinite,
+    bubbleFloat1 12s ease-in-out infinite,
+    bubbleFloat2 15s ease-in-out infinite reverse,
+    bubbleFloat3 10s ease-in-out infinite,
+    gradientPulse 6s ease-in-out infinite;
+  z-index: -1;
+}
+
+.background-animation::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 70% 70%, rgba(255, 182, 193, 0.4) 0%, transparent 30%),
+    radial-gradient(circle at 30% 20%, rgba(173, 216, 230, 0.4) 0%, transparent 35%),
+    radial-gradient(circle at 90% 40%, rgba(255, 239, 213, 0.4) 0%, transparent 25%);
+  background-size: 250% 250%, 300% 300%, 200% 200%;
+  animation: 
+    floatingBubbles 20s linear infinite,
+    colorShift 14s ease-in-out infinite;
+  opacity: 0.7;
+}
+
+.background-animation::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    conic-gradient(from 0deg at 50% 50%, 
+      transparent 0deg, 
+      rgba(255, 107, 107, 0.1) 45deg, 
+      transparent 90deg, 
+      rgba(78, 205, 196, 0.1) 135deg, 
+      transparent 180deg, 
+      rgba(69, 183, 209, 0.1) 225deg, 
+      transparent 270deg, 
+      rgba(255, 217, 61, 0.1) 315deg, 
+      transparent 360deg);
+  animation: 
+    rotate 30s linear infinite,
+    pulseGlow 8s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* כותרת ראשית */
+.birthday-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 30px;
+  padding: 2rem 1.5rem;
+  margin: 1rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  max-width: 90vw;
+  max-height: 90vh;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.card-header {
+  margin-bottom: 2rem;
+}
+
+.main-title {
+  font-size: clamp(1.5rem, 6vw, 3rem);
+  font-weight: 800;
+  color: var(--text-light);
+  text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+  margin-bottom: 1rem;
+  transition: opacity 0.3s ease;
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subtitle {
+  font-size: clamp(1.2rem, 4vw, 2rem);
+  font-weight: 600;
+  color: var(--text-light);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  opacity: 0.9;
+}
+
+.main-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  animation: slideInFromTop 1s ease-out;
+}
+
+.birthday-title {
+  font-size: clamp(2rem, 8vw, 4rem);
+  font-weight: 800;
+  color: var(--text-light);
+  text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+  margin-bottom: 1rem;
+  animation: bounce 2s infinite;
+}
+
+.age-celebration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.age-number {
+  font-size: clamp(3rem, 12vw, 6rem);
+  font-weight: 900;
+  color: var(--gold-color);
+  text-shadow: 4px 4px 8px rgba(0,0,0,0.4);
+  animation: pulse 2s infinite alternate;
+}
+
+.age-text {
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--gold-color), #ffd700, #ffed4e, var(--gold-color));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* קטע התמונה מעודכן */
+.photo-section {
+  margin: 2rem 0;
+  animation: slideInFromLeft 1s ease-out 0.3s both;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.photo-frame {
+  width: min(350px, 80vw);
+  height: min(350px, 80vw);
+  border: 8px solid var(--gold-color);
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 
+    0 15px 35px rgba(0,0,0,0.2),
+    0 5px 15px rgba(255,217,61,0.4),
+    inset 0 0 20px rgba(255,255,255,0.1);
+  position: relative;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.photo-frame:hover {
+  transform: scale(1.05) rotate(2deg);
+  box-shadow: 
+    0 20px 40px rgba(0,0,0,0.3),
+    0 10px 20px rgba(255,217,61,0.6),
+    inset 0 0 30px rgba(255,255,255,0.2);
+}
+
+.photo-frame::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #ffd93d);
+  border-radius: 50%;
+  z-index: -1;
+  animation: borderGlow 3s ease-in-out infinite;
+}
+
+.photo-placeholder, .photo-placeholder-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-light);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.photo-placeholder:hover, .photo-placeholder-content:hover {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.placeholder-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+.placeholder-text {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.placeholder-subtext {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  margin-top: 0.5rem;
+}
+
+.uploaded-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.3s ease;
+}
+
+.photo-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8a80 100%);
+  color: white;
+  font-weight: 600;
+}
+
+/* כפתור החלפת תמונה */
+.photo-controls {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.change-photo-btn {
+  background: linear-gradient(45deg, var(--gold-color), #ffeb3b);
+  color: var(--text-dark);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Rubik', sans-serif;
+  font-size: 0.9rem;
+}
+
+.change-photo-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255,217,61,0.4);
+}
+
+@keyframes borderGlow {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+/* ברכות מתחלפות */
+.wishes-section {
+  margin: 2rem 0;
+  animation: slideInFromRight 1s ease-out 0.6s both;
+}
+
+.wish-container {
+  background: rgba(255,255,255,0.9);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  max-width: 600px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.rotating-wish {
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
+  font-weight: 600;
+  color: var(--text-dark);
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeInOut 4s infinite;
+}
+
+/* כפתורי אינטראקציה */
+.interaction-section {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 2rem 0;
+  animation: slideInFromBottom 1s ease-out 0.9s both;
+}
+
+.celebrate-btn, .music-btn, .surprise-btn {
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  color: var(--text-light);
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Rubik', sans-serif;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.celebrate-btn:hover, .music-btn:hover, .surprise-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+}
+
+.celebrate-btn:active, .music-btn:active, .surprise-btn:active {
+  transform: translateY(0);
+}
+
+/* אפקט מיוחד לכפתור המוזיקה */
+.music-btn {
+  background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+  background-size: 200% 200%;
+  animation: musicButtonGlow 3s ease-in-out infinite;
+}
+
+.music-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s;
+}
+
+.music-btn:hover::before {
+  left: 100%;
+}
+
+@keyframes musicButtonGlow {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* בלונים מעופפים */
+.floating-elements {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.balloon {
+  position: absolute;
+  font-size: 2rem;
+  animation: float 6s ease-in-out infinite;
+}
+
+.balloon-1 {
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+  color: var(--primary-color);
+}
+
+.balloon-2 {
+  top: 60%;
+  right: 15%;
+  animation-delay: 2s;
+  color: var(--secondary-color);
+}
+
+.balloon-3 {
+  top: 40%;
+  left: 80%;
+  animation-delay: 4s;
+  color: var(--accent-color);
+}
+
+/* קונפטי */
+.confetti-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--gold-color);
+  animation: confettiFall 3s linear forwards;
+}
+
+/* אנימציות מתקדמות */
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%, 0% 0%, 100% 100%, 50% 50%, 0% 0%; }
+  25% { background-position: 100% 50%, 50% 50%, 0% 0%, 100% 100%, 50% 50%; }
+  50% { background-position: 100% 100%, 100% 0%, 50% 50%, 0% 0%, 100% 100%; }
+  75% { background-position: 0% 100%, 50% 100%, 100% 50%, 50% 0%, 50% 50%; }
+}
+
+@keyframes bubbleFloat1 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-20px) rotate(120deg); }
+  66% { transform: translateY(-10px) rotate(240deg); }
+}
+
+@keyframes bubbleFloat2 {
+  0%, 100% { transform: translateX(0px) scale(1); }
+  50% { transform: translateX(20px) scale(1.1); }
+}
+
+@keyframes bubbleFloat3 {
+  0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+  25% { transform: translate(10px, -15px) rotate(90deg); }
+  50% { transform: translate(-5px, -25px) rotate(180deg); }
+  75% { transform: translate(-10px, -10px) rotate(270deg); }
+}
+
+@keyframes gradientPulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+@keyframes floatingBubbles {
+  0% { background-position: 0% 0%, 100% 100%, 50% 0%; }
+  25% { background-position: 25% 25%, 75% 75%, 75% 25%; }
+  50% { background-position: 50% 50%, 50% 50%, 100% 50%; }
+  75% { background-position: 75% 25%, 25% 75%, 25% 75%; }
+  100% { background-position: 100% 0%, 0% 100%, 0% 100%; }
+}
+
+@keyframes colorShift {
+  0%, 100% { filter: hue-rotate(0deg) brightness(1); }
+  25% { filter: hue-rotate(90deg) brightness(1.1); }
+  50% { filter: hue-rotate(180deg) brightness(0.9); }
+  75% { filter: hue-rotate(270deg) brightness(1.1); }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.05); }
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(-5deg);
+  }
+  75% {
+    transform: translateY(-15px) rotate(3deg);
+  }
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0; transform: translateY(10px); }
+  10%, 90% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* אפקטים מיוחדים */
+.celebration-mode .birthday-title {
+  animation: bounce 0.5s infinite;
+}
+
+.celebration-mode .age-number {
+  animation: pulse 0.3s infinite alternate;
+}
+
+.celebration-mode .photo-frame {
+  animation: bounce 1s infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  #app {
+    padding: 10px;
+  }
+  
+  .photo-frame {
+    width: 250px;
+    height: 250px;
+  }
+  
+  .wish-container {
+    padding: 1.5rem;
+    margin: 0 10px;
+  }
+  
+  .interaction-section {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .celebrate-btn, .music-btn, .surprise-btn {
+    width: 80%;
+    max-width: 300px;
+  }
+}
+
+/* תמיכה מלאה במובייל */
+@media (max-width: 768px) {
+  #app {
+    padding: 10px;
+  }
+  
+  .birthday-card {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+  
+  .main-title {
+    font-size: 2.5rem;
+  }
+  
+  .subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .interaction-section {
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .celebrate-btn, .music-btn, .surprise-btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    min-width: 120px;
+  }
+  
+  .photo-section {
+    margin: 1.5rem 0;
+  }
+  
+  .photo-frame {
+    width: 220px;
+    height: 220px;
+  }
+  
+  .age-celebration {
+    gap: 0.8rem;
+  }
+  
+  .age-number {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .birthday-card {
+    padding: 1.5rem 1rem;
+    margin: 0.5rem;
+  }
+  
+  .main-title {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .photo-frame {
+    width: 180px;
+    height: 180px;
+  }
+  
+  .celebrate-btn, .music-btn, .surprise-btn {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
+    min-width: 100px;
+  }
+  
+  .age-number {
+    font-size: 2.5rem;
+  }
+  
+  .floating-elements {
+    display: none; /* הסתרת אלמנטים מעופפים במובייל קטן */
+  }
+  
+  .photo-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .change-photo-btn, .toggle-rotation-btn {
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* גובה מסך קטן */
+@media (max-height: 600px) {
+  .birthday-card {
+    padding: 1rem;
+    margin: 0.5rem;
+  }
+  
+  .photo-frame {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .age-number {
+    font-size: 2rem;
+  }
+}
+
+/* אנימציות JavaScript נוספות */
+@keyframes musicBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes fireworkExplode {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes heartFall {
+  0% {
+    transform: translateY(-50px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes sparkleFloat {
+  0% {
+    transform: translateY(0) scale(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-20px) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-40px) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes particleExplosion {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(-50% + var(--end-x)), calc(-50% + var(--end-y))) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes celebrationPulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  20% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 1;
+  }
+  80% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes surpriseBounce {
+  0% {
+    transform: translateX(-50%) scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* אנימציות נוספות למודל */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* סגנון כפתור הברכה האישית */
+.personal-greeting-btn {
+  background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+  color: white;
+  border: none;
+  padding: 15px 25px;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  margin: 0.5rem;
+}
+
+.personal-greeting-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+}
+
+.personal-greeting-btn:active {
+  transform: translateY(-1px) scale(1.02);
+}

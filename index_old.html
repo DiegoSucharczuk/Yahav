@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/birthday-cake.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎉 יום הולדת שמח יהב! 🎂</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="app">
+      <div class="background-animation"></div>
+      
+      <!-- כותרת ראשית -->
+      <header class="main-header">
+        <h1 class="birthday-title">
+          🎉 יום הולדת שמח יהב! 🎉
+        </h1>
+        <div class="age-celebration">
+          <span class="age-number">22</span>
+          <span class="age-text">שנים של אושר!</span>
+        </div>
+      </header>
+
+      <!-- קונטיינר לתמונה -->
+      <section class="photo-section">
+        <div class="photo-frame">
+          <div class="photo-placeholder-content" id="photoContainer">
+            <div class="placeholder-icon">📸</div>
+            <div class="placeholder-text">
+              <div>תמונות של יהב</div>
+              <div class="placeholder-subtext">טוען תמונות...</div>
+            </div>
+          </div>
+        </div>
+        <div class="photo-controls">
+          <button class="change-photo-btn" id="changePhotoBtn">
+            🔄 תמונה אחרת
+          </button>
+          <button class="change-photo-btn" id="toggleRotationBtn">
+            ⏸️ עצור סיבוב
+          </button>
+        </div>
+      </section>
+
+      <!-- ברכות מתחלפות -->
+      <section class="wishes-section">
+        <div class="wish-container">
+          <p class="rotating-wish" id="rotatingWish"></p>
+        </div>
+      </section>
+
+      <!-- כפתורי אינטראקציה -->
+      <section class="interaction-section">
+        <button class="celebrate-btn" id="celebrateBtn">🎊 בואו נחגוג! 🎊</button>
+        <button class="music-btn" id="musicBtn">🎵 מוזיקה 🎵</button>
+        <button class="surprise-btn" id="surpriseBtn">🎁 הפתעה! 🎁</button>
+      </section>
+
+      <!-- אלמנטים מעופפים -->
+      <div class="floating-elements">
+        <div class="balloon balloon-1">🎈</div>
+        <div class="balloon balloon-2">🎈</div>
+        <div class="balloon balloon-3">🎈</div>
+        <div class="confetti-container" id="confettiContainer"></div>
+      </div>
+
+      <!-- פלייר מוזיקה נסתר -->
+      <audio id="backgroundMusic" loop>
+        <!-- אפשר להוסיף מוזיקה מאוחר יותר -->
+      </audio>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>l>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
