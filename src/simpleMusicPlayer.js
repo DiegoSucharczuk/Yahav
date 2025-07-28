@@ -277,29 +277,49 @@ class BirthdayMusicPlayer {
 
   // עצירת מוזיקה
   stop() {
-    console.log('🔇 stop() נקרא');
+    console.log('🔇 ========== stop() התחיל ==========');
+    console.log('🔇 זמן:', new Date().toLocaleTimeString());
     console.log('🔇 isPlaying לפני עצירה:', this.isPlaying);
+    console.log('🔇 currentAudio לפני עצירה:', this.currentAudio);
     
     if (this.currentAudio) {
+      console.log('🔇 נמצא currentAudio, מתחיל עצירה...');
+      console.log('🔇 מצב אודיו לפני עצירה:', {
+        paused: this.currentAudio.paused,
+        currentTime: this.currentAudio.currentTime,
+        duration: this.currentAudio.duration
+      });
+      
       console.log('🔇 עוצר אודיו...');
       this.currentAudio.pause();
+      console.log('🔇 מאפס currentTime...');
       this.currentAudio.currentTime = 0;
       
       // הסרת event listeners למניעת דליפת זיכרון
       if (this.onSongEnded) {
+        console.log('🔇 מסיר event listener עבור ended...');
         this.currentAudio.removeEventListener('ended', this.onSongEnded);
       }
+      console.log('🔇 מסיר event listener עבור error...');
       this.currentAudio.removeEventListener('error', this.onSongEnded);
       
+      console.log('🔇 מנקה currentAudio...');
       // ניקוי מלא
       this.currentAudio = null;
+      console.log('🔇 currentAudio נוקה:', this.currentAudio);
+    } else {
+      console.log('🔇 אין currentAudio, אין מה לעצור');
     }
     
     // חשוב! סמן שהמשתמש עצר ידנית - תמיד לפני הלוג
+    console.log('🔇 מעדכן isPlaying ל-false...');
     this.isPlaying = false;
     this.onSongEnded = null;
     
+    console.log('🔇 ========== stop() הסתיים ==========');
     console.log('✅ מוזיקה נעצרה - isPlaying:', this.isPlaying);
+    console.log('🔇 currentAudio אחרי עצירה:', this.currentAudio);
+    console.log('🔇 onSongEnded אחרי עצירה:', this.onSongEnded);
     return true; // מחזיר הצלחה
   }
 

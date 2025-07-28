@@ -52,6 +52,59 @@ document.addEventListener('DOMContentLoaded', function() {
     console.error('❌ שגיאה באתחול האפליקציה:', error);
     document.body.innerHTML = '<div style="color: red; font-size: 24px; padding: 20px;">שגיאה באתחול: ' + error.message + '</div>';
   }
+  
+  // הוספת פונקציות לבדיקה גלובלית
+  window.debugMusicPlayer = function() {
+    console.log('🔍 ========== דיבוג נגן מוזיקה ==========');
+    console.log('🎵 musicPlayer:', musicPlayer);
+    console.log('🎵 musicPlayer.isPlaying:', musicPlayer.isPlaying);
+    console.log('🎵 musicPlayer.currentAudio:', musicPlayer.currentAudio);
+    console.log('🎵 musicPlayer.musicFiles:', musicPlayer.musicFiles);
+    console.log('🎵 musicPlayer.onSongEnded:', musicPlayer.onSongEnded);
+    
+    const musicBtn = document.getElementById('musicBtn');
+    console.log('🎵 כפתור מוזיקה:', musicBtn);
+    console.log('🎵 טקסט כפתור:', musicBtn ? musicBtn.textContent : 'לא נמצא');
+    console.log('🔍 ========================================');
+  };
+  
+  window.forceMusicStop = function() {
+    console.log('🔧 כפיית עצירת מוזיקה...');
+    if (musicPlayer && musicPlayer.currentAudio) {
+      musicPlayer.currentAudio.pause();
+      musicPlayer.currentAudio.currentTime = 0;
+      musicPlayer.isPlaying = false;
+      musicPlayer.currentAudio = null;
+      const musicBtn = document.getElementById('musicBtn');
+      if (musicBtn) {
+        musicBtn.textContent = '🎵 מוזיקה 🎵';
+        musicBtn.style.background = 'linear-gradient(45deg, var(--primary-color), var(--secondary-color))';
+      }
+      console.log('✅ עצירה כפויה הושלמה');
+    }
+  };
+  
+  // פונקציה חדשה - בדיקה במהירות
+  window.quickCheck = function() {
+    console.log('⚡ בדיקה מהירה:');
+    const musicBtn = document.getElementById('musicBtn');
+    console.log('🎵 טקסט כפתור:', musicBtn ? musicBtn.textContent : 'לא נמצא');
+    console.log('🎵 musicPlayer.isPlaying:', musicPlayer ? musicPlayer.isPlaying : 'אין נגן');
+    console.log('🎵 יש currentAudio:', musicPlayer && musicPlayer.currentAudio ? 'כן' : 'לא');
+    
+    // בדיקת אלמנטי אודיו ב-DOM
+    const audioElements = document.querySelectorAll('audio');
+    console.log('🎵 אלמנטי אודיו ב-DOM:', audioElements.length);
+    audioElements.forEach((audio, index) => {
+      console.log(`🎵 אודיו ${index + 1}:`, {
+        paused: audio.paused,
+        currentTime: audio.currentTime,
+        src: audio.src
+      });
+    });
+  };
+  
+  console.log('🔧 פונקציות דיבוג זמינות: debugMusicPlayer(), forceMusicStop(), quickCheck()');
 });
 
 function initializeApp() {
@@ -137,22 +190,9 @@ function setupPhotoManager() {
 // מאזיני אירועים
 function setupEventListeners() {
   console.log('🎯 מתחיל הגדרת אירועים...');
-  console.log('🔍 בודק DOM:', document.body);
-  console.log('📱 בודק app element:', document.getElementById('app'));
   
-  // כפתור מוזיקה
-  const musicBtn = document.getElementById('musicBtn');
-  if (musicBtn) {
-    musicBtn.addEventListener('click', function(e) {
-      console.log('כפתור מוזיקה נלחץ!', e);
-      toggleMusic();
-    });
-    console.log('כפתור מוזיקה הוגדר');
-  } else {
-    console.error('כפתור מוזיקה לא נמצא!');
-  }
-  
-  console.log('הגדרת אירועים הושלמה');
+  // ביטול כל ה event listeners הישנים
+  console.log('הגדרת אירועים הושלמה (משתמש ב-onclick ישירות)');
 }
 
 // אנימציה מעופפת
@@ -289,31 +329,68 @@ function triggerCelebration() {
 
 // מוזיקה פשוטה ונקייה
 async function toggleMusic() {
-  console.log('🎵 נקראה פונקציית toggleMusic!');
+  console.log('🎵 ========== toggleMusic() התחיל ==========');
   
   const musicBtn = document.getElementById('musicBtn');
-  
   if (!musicBtn) {
-    console.error('כפתור מוזיקה לא נמצא!');
+    console.error('❌ כפתור מוזיקה לא נמצא!');
     return;
   }
   
-  // השתמש רק במשתנה של המחלקה כמקור האמת
-  console.log('🎵 musicPlayer.isPlaying לפני פעולה:', musicPlayer.isPlaying);
+  console.log('🎵 טקסט כפתור נוכחי:', musicBtn.textContent);
   
-  if (musicPlayer.isPlaying) {
+  // בדיקה פשוטה - אם הכפתור אומר "עצור" אז המוזיקה פועלת
+  const shouldStop = musicBtn.textContent.includes('עצור');
+  
+  if (shouldStop) {
     // עוצרים מוזיקה
     console.log('🔇 עוצר מוזיקה...');
-    const stopSuccess = musicPlayer.stop();
     
-    if (stopSuccess) {
-      musicBtn.textContent = '🎵 מוזיקה 🎵';
-      musicBtn.style.background = 'linear-gradient(45deg, var(--primary-color), var(--secondary-color))';
-      console.log('✅ מוזיקה נעצרה - isPlaying אחרי עצירה:', musicPlayer.isPlaying);
+    // עצירה מיידית וישירה - חזקה יותר!
+    if (musicPlayer.currentAudio) {
+      console.log('🔇 עוצר currentAudio...');
+      musicPlayer.currentAudio.pause();
+      musicPlayer.currentAudio.currentTime = 0;
+      musicPlayer.currentAudio.src = ''; // מנקה את המקור
+      musicPlayer.currentAudio.load(); // טוען מחדש (ריק)
+      musicPlayer.currentAudio = null;
+      console.log('🔇 currentAudio נוקה לחלוטין');
     }
+    
+    // ניקוי כל הפניות
+    musicPlayer.isPlaying = false;
+    musicPlayer.onSongEnded = null;
+    
+    // עצירת כל אודיו אחר שיכול להיות פועל
+    const allAudio = document.querySelectorAll('audio');
+    allAudio.forEach(audio => {
+      console.log('🔇 עוצר אודיו נוסף:', audio);
+      audio.pause();
+      audio.currentTime = 0;
+      audio.src = '';
+    });
+    
+    // עדכון כפתור
+    musicBtn.textContent = '🎵 מוזיקה 🎵';
+    musicBtn.style.background = 'linear-gradient(45deg, var(--primary-color), var(--secondary-color))';
+    
+    console.log('✅ מוזיקה נעצרה לחלוטין');
+    
+    // בדיקה שהעצירה באמת עבדה
+    setTimeout(() => {
+      console.log('🔍 בדיקה אחרי עצירה:');
+      console.log('🔍 musicPlayer.isPlaying:', musicPlayer.isPlaying);
+      console.log('🔍 musicPlayer.currentAudio:', musicPlayer.currentAudio);
+      console.log('🔍 טקסט כפתור:', musicBtn.textContent);
+      
+      const stillPlaying = document.querySelectorAll('audio').length > 0;
+      console.log('🔍 יש עדיין אלמנטי אודיו:', stillPlaying);
+    }, 100);
+    
   } else {
     // מפעילים מוזיקה
     console.log('🎵 מפעיל מוזיקה...');
+    
     musicBtn.textContent = '🎵 טוען... 🎵';
     musicBtn.disabled = true;
     
@@ -324,7 +401,7 @@ async function toggleMusic() {
         musicBtn.textContent = '🔇 עצור מוזיקה 🔇';
         musicBtn.style.background = 'linear-gradient(45deg, #ff4757, #ff6b6b)';
         playBirthdayAnimation();
-        console.log('✅ מוזיקה הופעלה - isPlaying אחרי הפעלה:', musicPlayer.isPlaying);
+        console.log('✅ מוזיקה הופעלה');
       } else {
         musicBtn.textContent = '❌ שגיאה במוזיקה';
         console.error('❌ הפעלת מוזיקה נכשלה');
@@ -336,6 +413,8 @@ async function toggleMusic() {
     
     musicBtn.disabled = false;
   }
+  
+  console.log('🎵 ========== toggleMusic() הסתיים ==========');
 }
 
 // ברכה אישית מיוחדת
