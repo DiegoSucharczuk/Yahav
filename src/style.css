@@ -707,6 +707,45 @@ body {
     opacity: 0.6 !important;
   }
   
+  /* ביטול אנימציות נוספות שגורמות לריצוד */
+  .birthday-card {
+    animation: none !important;
+  }
+  
+  .main-title {
+    animation: none !important;
+  }
+  
+  .age-number {
+    animation: none !important;
+  }
+  
+  .age-text {
+    animation: none !important;
+  }
+  
+  .photo-frame {
+    animation: none !important;
+  }
+  
+  .photo-frame:hover {
+    transform: none !important;
+  }
+  
+  .photo-frame::before {
+    animation: none !important;
+  }
+  
+  .music-btn {
+    animation: none !important;
+  }
+  
+  /* כל האנימציות כלליות */
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+  
   #app {
     padding: 10px;
   }
