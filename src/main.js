@@ -2,26 +2,9 @@ import './style.css'
 import BirthdayMusicPlayer from './simpleMusicPlayer.js'
 import PhotoManager from './photoManager.js'
 
-console.log('📝 הקוד נטען בהצלחה, מחכה ל-DOM...');
-
 // יצירת נגן מוזיקה ומנהל תמונות
-console.log('🎵 יוצר נגן מוזיקה...');
-let musicPlayer, photoManager;
-
-try {
-  musicPlayer = new BirthdayMusicPlayer();
-  console.log('🎵 נגן מוזיקה נוצר:', musicPlayer);
-} catch (error) {
-  console.error('❌ שגיאה ביצירת נגן מוזיקה:', error);
-}
-
-try {
-  console.log('📸 יוצר מנהל תמונות...');
-  photoManager = new PhotoManager();
-  console.log('📸 מנהל תמונות נוצר:', photoManager);
-} catch (error) {
-  console.error('❌ שגיאה ביצירת מנהל תמונות:', error);
-}
+const musicPlayer = new BirthdayMusicPlayer();
+const photoManager = new PhotoManager();
 
 // ברכות מיוחדות ליהב
 const birthdayWishes = [
@@ -40,11 +23,10 @@ const birthdayWishes = [
 let currentWishIndex = 0;
 let celebrationMode = false;
 let musicPlaying = false;
-let photoRotationActive = true;
+
+// אתחול האפליקציה
 document.addEventListener('DOMContentLoaded', function() {
   console.log('📄 DOM נטען, מתחיל אתחול האפליקציה...');
-  console.log('🎯 document.body:', document.body);
-  console.log('📱 app element:', document.getElementById('app'));
   
   try {
     initializeApp();
@@ -52,168 +34,23 @@ document.addEventListener('DOMContentLoaded', function() {
     console.error('❌ שגיאה באתחול האפליקציה:', error);
     document.body.innerHTML = '<div style="color: red; font-size: 24px; padding: 20px;">שגיאה באתחול: ' + error.message + '</div>';
   }
-  
-  // הוספת פונקציות לבדיקה גלובלית
-  window.debugMusicPlayer = function() {
-    console.log('🔍 ========== דיבוג נגן מוזיקה ==========');
-    console.log('🎵 musicPlayer:', musicPlayer);
-    console.log('🎵 musicPlayer.isPlaying:', musicPlayer.isPlaying);
-    console.log('🎵 musicPlayer.currentAudio:', musicPlayer.currentAudio);
-    console.log('🎵 musicPlayer.musicFiles:', musicPlayer.musicFiles);
-    console.log('🎵 musicPlayer.onSongEnded:', musicPlayer.onSongEnded);
-    
-    const musicBtn = document.getElementById('musicBtn');
-    console.log('🎵 כפתור מוזיקה:', musicBtn);
-    console.log('🎵 טקסט כפתור:', musicBtn ? musicBtn.textContent : 'לא נמצא');
-    console.log('🔍 ========================================');
-  };
-  
-  window.forceMusicStop = function() {
-    console.log('🔧 כפיית עצירת מוזיקה...');
-    if (musicPlayer && musicPlayer.currentAudio) {
-      musicPlayer.currentAudio.pause();
-      musicPlayer.currentAudio.currentTime = 0;
-      musicPlayer.isPlaying = false;
-      musicPlayer.currentAudio = null;
-      const musicBtn = document.getElementById('musicBtn');
-      if (musicBtn) {
-        musicBtn.textContent = '🎵 מוזיקה 🎵';
-        musicBtn.style.background = 'linear-gradient(45deg, var(--primary-color), var(--secondary-color))';
-      }
-      console.log('✅ עצירה כפויה הושלמה');
-    }
-  };
-  
-  // פונקציה חדשה - בדיקה במהירות
-  window.quickCheck = function() {
-    console.log('⚡ בדיקה מהירה:');
-    const musicBtn = document.getElementById('musicBtn');
-    console.log('🎵 טקסט כפתור:', musicBtn ? musicBtn.textContent : 'לא נמצא');
-    console.log('🎵 musicPlayer.isPlaying:', musicPlayer ? musicPlayer.isPlaying : 'אין נגן');
-    console.log('🎵 יש currentAudio:', musicPlayer && musicPlayer.currentAudio ? 'כן' : 'לא');
-    
-    // בדיקת אלמנטי אודיו ב-DOM
-    const audioElements = document.querySelectorAll('audio');
-    console.log('🎵 אלמנטי אודיו ב-DOM:', audioElements.length);
-    audioElements.forEach((audio, index) => {
-      console.log(`🎵 אודיו ${index + 1}:`, {
-        paused: audio.paused,
-        currentTime: audio.currentTime,
-        src: audio.src
-      });
-    });
-  };
-  
-  console.log('🔧 פונקציות דיבוג זמינות: debugMusicPlayer(), forceMusicStop(), quickCheck()');
 });
 
 function initializeApp() {
-  console.log('מתחיל אתחול האפליקציה...');
-  
-  try {
-    createBirthdayCard();
-    console.log('✅ כרטיס יום הולדת נוצר בהצלחה');
-  } catch (error) {
-    console.error('❌ שגיאה ביצירת כרטיס יום הולדת:', error);
-    return;
-  }
-  
-  // נעצור רגע יותר ארוך כדי לוודא שהאלמנטים נוצרו בבטחה
-  setTimeout(() => {
-    console.log('מתחיל הגדרת מרכיבי האפליקציה...');
-    
-    try {
-      setupWishRotation();
-      console.log('✅ סיבוב ברכות הוגדר');
-    } catch (error) {
-      console.error('❌ שגיאה בהגדרת סיבוב ברכות:', error);
-    }
-    
-    try {
-      setupPhotoManager();
-      console.log('✅ מנהל תמונות הוגדר');
-    } catch (error) {
-      console.error('❌ שגיאה בהגדרת מנהל תמונות:', error);
-    }
-    
-    try {
-      setupEventListeners();
-      console.log('✅ מאזיני אירועים הוגדרו');
-    } catch (error) {
-      console.error('❌ שגיאה בהגדרת מאזיני אירועים:', error);
-    }
-    
-    try {
-      startFloatingAnimation();
-      console.log('✅ אנימציות הופעלו');
-    } catch (error) {
-      console.error('❌ שגיאה בהפעלת אנימציות:', error);
-    }
-    
-    console.log('אתחול הושלם בהצלחה!');
-  }, 200);
-}
-
-// סיבוב ברכות
-function setupWishRotation() {
-  setInterval(() => {
-    if (!celebrationMode) {
-      currentWishIndex = (currentWishIndex + 1) % birthdayWishes.length;
-      updateMainTitle();
-    }
-  }, 3000);
-}
-
-function updateMainTitle() {
-  const titleElement = document.querySelector('.main-title');
-  if (titleElement) {
-    titleElement.style.opacity = '0';
-    setTimeout(() => {
-      titleElement.textContent = birthdayWishes[currentWishIndex];
-      titleElement.style.opacity = '1';
-    }, 300);
-  }
-}
-
-// הקמת מנהל התמונות
-function setupPhotoManager() {
-  const photoContainer = document.getElementById('photoContainer');
-  if (photoContainer) {
-    console.log('📸 מגדיר מנהל תמונות...');
-    // התחלת סיבוב אוטומטי של תמונות כל 4 שניות
-    photoManager.startRotation(photoContainer, 4000);
-  } else {
-    console.error('❌ קונטיינר תמונות לא נמצא!');
-  }
-}
-
-// מאזיני אירועים
-function setupEventListeners() {
-  console.log('🎯 מתחיל הגדרת אירועים...');
-  
-  // ביטול כל ה event listeners הישנים
-  console.log('הגדרת אירועים הושלמה (משתמש ב-onclick ישירות)');
-}
-
-// אנימציה מעופפת
-function startFloatingAnimation() {
-  const floatingElements = document.querySelectorAll('.floating-elements > *');
-  floatingElements.forEach((element, index) => {
-    element.style.animationDelay = `${index * 0.5}s`;
-  });
+  createBirthdayCard();
+  setupWishRotation();
+  setupPhotoManager();
+  setupEventListeners();
+  startFloatingAnimation();
 }
 
 // יצירת כרטיס יום הולדת
 function createBirthdayCard() {
-  console.log('מתחיל יצירת כרטיס יום הולדת...');
-  
   const app = document.getElementById('app');
   if (!app) {
     console.error('אלמנט app לא נמצא!');
-    document.body.innerHTML = '<div style="color: red; font-size: 24px; padding: 20px;">שגיאה: אלמנט app לא נמצא!</div>';
     return;
   }
-  console.log('אלמנט app נמצא:', app);
   
   const cardHTML = `
     <div class="birthday-card">
@@ -255,10 +92,44 @@ function createBirthdayCard() {
   `;
   
   app.innerHTML = cardHTML;
+}
+
+// סיבוב ברכות
+function setupWishRotation() {
+  setInterval(() => {
+    if (!celebrationMode) {
+      currentWishIndex = (currentWishIndex + 1) % birthdayWishes.length;
+      updateMainTitle();
+    }
+  }, 3000);
+}
+
+function updateMainTitle() {
+  const titleElement = document.querySelector('.main-title');
+  if (titleElement) {
+    titleElement.style.opacity = '0';
+    setTimeout(() => {
+      titleElement.textContent = birthdayWishes[currentWishIndex];
+      titleElement.style.opacity = '1';
+    }, 300);
+  }
+}
+
+// הקמת מנהל התמונות
+function setupPhotoManager() {
+  const photoContainer = document.getElementById('photoContainer');
+  if (photoContainer) {
+    console.log('📸 מגדיר מנהל תמונות...');
+    photoManager.startRotation(photoContainer, 4000);
+  } else {
+    console.error('❌ קונטיינר תמונות לא נמצא!');
+  }
+}
+
+// מאזיני אירועים
+function setupEventListeners() {
+  console.log('🎯 מתחיל הגדרת אירועים...');
   
-  console.log('תוכן HTML נוצר. מוסיף event listeners ישירות...');
-  
-  // הוספת event listeners ישירות אחרי יצירת ה-HTML
   const musicBtn = document.getElementById('musicBtn');
   const personalGreetingBtn = document.getElementById('personalGreetingBtn');
   
@@ -267,7 +138,7 @@ function createBirthdayCard() {
       console.log('🎵 כפתור מוזיקה נלחץ!');
       await toggleMusic();
     };
-    console.log('✅ כפתור מוזיקה קושר ל-onclick');
+    console.log('✅ כפתור מוזיקה קושר');
   }
   
   if (personalGreetingBtn) {
@@ -275,56 +146,16 @@ function createBirthdayCard() {
       console.log('💌 כפתור ברכה אישית נלחץ!');
       showPersonalGreeting();
     };
-    console.log('✅ כפתור ברכה אישית קושר ל-onclick');
+    console.log('✅ כפתור ברכה אישית קושר');
   }
-  
-  console.log('תוכן HTML נוצר. בודק אלמנטים...');
-  
-  // בדיקה שהאלמנטים נוצרו
-  setTimeout(() => {
-    const celebrateBtn = document.getElementById('celebrateBtn');
-    const musicBtn = document.getElementById('musicBtn');
-    const surpriseBtn = document.getElementById('surpriseBtn');
-    
-    console.log('כפתור חגיגה:', celebrateBtn);
-    console.log('כפתור מוזיקה:', musicBtn);
-    console.log('כפתור הפתעה:', surpriseBtn);
-  }, 50);
-  
-  console.log('יצירת כרטיס יום הולדת הושלמה');
 }
 
-// חגיגה!
-function triggerCelebration() {
-  console.log('🎊 נקראה פונקציית triggerCelebration!');
-  celebrationMode = true;
-  const celebrateBtn = document.getElementById('celebrateBtn');
-  
-  if (!celebrateBtn) {
-    console.error('כפתור חגיגה לא נמצא!');
-    return;
-  }
-  
-  const originalText = celebrateBtn.textContent;
-  
-  // אנימציה לכפתור
-  celebrateBtn.style.transform = 'scale(1.2)';
-  celebrateBtn.style.background = 'linear-gradient(45deg, #ff6b6b, #ffd93d, #4ecdc4, #45b7d1)';
-  celebrateBtn.textContent = '🎊 חוגגים! 🎊';
-  
-  // יצירת חלקיקים מעופפים
-  createCelebrationParticles();
-  
-  // ברכה מיוחדת
-  showCelebrationMessage();
-  
-  // החזרה למצב רגיל
-  setTimeout(() => {
-    celebrateBtn.style.transform = 'scale(1)';
-    celebrateBtn.style.background = 'linear-gradient(45deg, var(--primary-color), var(--secondary-color))';
-    celebrateBtn.textContent = originalText;
-    celebrationMode = false;
-  }, 3000);
+// אנימציה מעופפת
+function startFloatingAnimation() {
+  const floatingElements = document.querySelectorAll('.floating-elements > *');
+  floatingElements.forEach((element, index) => {
+    element.style.animationDelay = `${index * 0.5}s`;
+  });
 }
 
 // מוזיקה פשוטה ונקייה
@@ -337,57 +168,9 @@ async function toggleMusic() {
     return;
   }
   
-  console.log('🎵 טקסט כפתור נוכחי:', musicBtn.textContent);
+  console.log('🎵 מצב נוכחי - musicPlaying:', musicPlaying);
   
-  // בדיקה פשוטה - אם הכפתור אומר "עצור" אז המוזיקה פועלת
-  const shouldStop = musicBtn.textContent.includes('עצור');
-  
-  if (shouldStop) {
-    // עוצרים מוזיקה
-    console.log('🔇 עוצר מוזיקה...');
-    
-    // עצירה מיידית וישירה - חזקה יותר!
-    if (musicPlayer.currentAudio) {
-      console.log('🔇 עוצר currentAudio...');
-      musicPlayer.currentAudio.pause();
-      musicPlayer.currentAudio.currentTime = 0;
-      musicPlayer.currentAudio.src = ''; // מנקה את המקור
-      musicPlayer.currentAudio.load(); // טוען מחדש (ריק)
-      musicPlayer.currentAudio = null;
-      console.log('🔇 currentAudio נוקה לחלוטין');
-    }
-    
-    // ניקוי כל הפניות
-    musicPlayer.isPlaying = false;
-    musicPlayer.onSongEnded = null;
-    
-    // עצירת כל אודיו אחר שיכול להיות פועל
-    const allAudio = document.querySelectorAll('audio');
-    allAudio.forEach(audio => {
-      console.log('🔇 עוצר אודיו נוסף:', audio);
-      audio.pause();
-      audio.currentTime = 0;
-      audio.src = '';
-    });
-    
-    // עדכון כפתור
-    musicBtn.textContent = '🎵 מוזיקה 🎵';
-    musicBtn.style.background = 'linear-gradient(45deg, var(--primary-color), var(--secondary-color))';
-    
-    console.log('✅ מוזיקה נעצרה לחלוטין');
-    
-    // בדיקה שהעצירה באמת עבדה
-    setTimeout(() => {
-      console.log('🔍 בדיקה אחרי עצירה:');
-      console.log('🔍 musicPlayer.isPlaying:', musicPlayer.isPlaying);
-      console.log('🔍 musicPlayer.currentAudio:', musicPlayer.currentAudio);
-      console.log('🔍 טקסט כפתור:', musicBtn.textContent);
-      
-      const stillPlaying = document.querySelectorAll('audio').length > 0;
-      console.log('🔍 יש עדיין אלמנטי אודיו:', stillPlaying);
-    }, 100);
-    
-  } else {
+  if (!musicPlaying) {
     // מפעילים מוזיקה
     console.log('🎵 מפעיל מוזיקה...');
     
@@ -398,13 +181,30 @@ async function toggleMusic() {
       const success = await musicPlayer.startPlaying();
       
       if (success) {
+        musicPlaying = true;
         musicBtn.textContent = '🔇 עצור מוזיקה 🔇';
         musicBtn.style.background = 'linear-gradient(45deg, #ff4757, #ff6b6b)';
         playBirthdayAnimation();
-        console.log('✅ מוזיקה הופעלה');
+        console.log('✅ מוזיקה הופעלה בהצלחה');
       } else {
         musicBtn.textContent = '❌ שגיאה במוזיקה';
         console.error('❌ הפעלת מוזיקה נכשלה');
+        
+        // ניסיון שני אחרי שנייה
+        setTimeout(async () => {
+          console.log('🔄 ניסיון שני...');
+          const secondTry = await musicPlayer.startPlaying();
+          if (secondTry) {
+            musicPlaying = true;
+            musicBtn.textContent = '🔇 עצור מוזיקה 🔇';
+            musicBtn.style.background = 'linear-gradient(45deg, #ff4757, #ff6b6b)';
+            console.log('✅ ניסיון שני הצליח');
+          } else {
+            musicBtn.textContent = '🎵 מוזיקה 🎵';
+          }
+          musicBtn.disabled = false;
+        }, 1000);
+        return;
       }
     } catch (error) {
       console.error('❌ שגיאה:', error);
@@ -412,9 +212,34 @@ async function toggleMusic() {
     }
     
     musicBtn.disabled = false;
+  } else {
+    // עוצרים מוזיקה
+    console.log('🔇 עוצר מוזיקה...');
+    
+    try {
+      musicPlayer.stop();
+      musicPlaying = false;
+      musicBtn.textContent = '🎵 מוזיקה 🎵';
+      musicBtn.style.background = 'linear-gradient(45deg, var(--primary-color), var(--secondary-color))';
+      console.log('✅ מוזיקה נעצרה בהצלחה');
+    } catch (error) {
+      console.error('❌ שגיאה בעצירת מוזיקה:', error);
+    }
   }
   
   console.log('🎵 ========== toggleMusic() הסתיים ==========');
+}
+
+// אנימציית מוזיקה
+function playBirthdayAnimation() {
+  const card = document.querySelector('.birthday-card');
+  if (card) {
+    card.style.animation = 'musicBounce 0.5s ease-in-out 3';
+    
+    setTimeout(() => {
+      card.style.animation = '';
+    }, 1500);
+  }
 }
 
 // ברכה אישית מיוחדת
@@ -525,212 +350,4 @@ function showModal(title, content) {
     closeBtn.style.transform = 'scale(1)';
     closeBtn.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
   };
-}
-function playBirthdayAnimation() {
-  const card = document.querySelector('.birthday-card');
-  card.style.animation = 'musicBounce 0.5s ease-in-out 3';
-  
-  setTimeout(() => {
-    card.style.animation = '';
-  }, 1500);
-}
-
-// הפתעה!
-function triggerSurprise() {
-  console.log('🎁 נקראה פונקציית triggerSurprise!');
-  
-  const surprises = [
-    () => createFireworks(),
-    () => createHeartRain(),
-    () => createSparkleEffect(),
-    () => showSurpriseMessage()
-  ];
-  
-  const randomSurprise = surprises[Math.floor(Math.random() * surprises.length)];
-  randomSurprise();
-}
-
-// יצירת זיקוקים
-function createFireworks() {
-  for (let i = 0; i < 20; i++) {
-    setTimeout(() => {
-      const firework = document.createElement('div');
-      firework.innerHTML = ['🎆', '✨', '🌟', '💫'][Math.floor(Math.random() * 4)];
-      firework.style.position = 'fixed';
-      firework.style.left = Math.random() * window.innerWidth + 'px';
-      firework.style.top = Math.random() * window.innerHeight + 'px';
-      firework.style.fontSize = '2rem';
-      firework.style.zIndex = '9999';
-      firework.style.pointerEvents = 'none';
-      firework.style.animation = 'fireworkExplode 2s ease-out forwards';
-      
-      document.body.appendChild(firework);
-      
-      setTimeout(() => {
-        if (document.body.contains(firework)) {
-          document.body.removeChild(firework);
-        }
-      }, 2000);
-    }, i * 100);
-  }
-}
-
-// גשם לבבות
-function createHeartRain() {
-  for (let i = 0; i < 15; i++) {
-    setTimeout(() => {
-      const heart = document.createElement('div');
-      heart.innerHTML = ['❤️', '💖', '💕', '💗'][Math.floor(Math.random() * 4)];
-      heart.style.position = 'fixed';
-      heart.style.left = Math.random() * window.innerWidth + 'px';
-      heart.style.top = '-50px';
-      heart.style.fontSize = '1.5rem';
-      heart.style.zIndex = '9999';
-      heart.style.pointerEvents = 'none';
-      heart.style.animation = 'heartFall 3s linear forwards';
-      
-      document.body.appendChild(heart);
-      
-      setTimeout(() => {
-        if (document.body.contains(heart)) {
-          document.body.removeChild(heart);
-        }
-      }, 3000);
-    }, i * 200);
-  }
-}
-
-// אפקט נצנוצים
-function createSparkleEffect() {
-  const card = document.querySelector('.birthday-card');
-  for (let i = 0; i < 30; i++) {
-    setTimeout(() => {
-      const sparkle = document.createElement('div');
-      sparkle.innerHTML = '✨';
-      sparkle.style.position = 'absolute';
-      sparkle.style.left = Math.random() * 100 + '%';
-      sparkle.style.top = Math.random() * 100 + '%';
-      sparkle.style.fontSize = '1rem';
-      sparkle.style.pointerEvents = 'none';
-      sparkle.style.animation = 'sparkleFloat 2s ease-out forwards';
-      
-      card.appendChild(sparkle);
-      
-      setTimeout(() => {
-        if (card.contains(sparkle)) {
-          card.removeChild(sparkle);
-        }
-      }, 2000);
-    }, i * 50);
-  }
-}
-
-// חלקיקי חגיגה
-function createCelebrationParticles() {
-  const particles = ['🎊', '🎉', '🎈', '🎁', '🌟', '✨', '💫', '🎭'];
-  
-  for (let i = 0; i < 25; i++) {
-    setTimeout(() => {
-      const particle = document.createElement('div');
-      particle.innerHTML = particles[Math.floor(Math.random() * particles.length)];
-      particle.style.position = 'fixed';
-      particle.style.left = '50%';
-      particle.style.top = '50%';
-      particle.style.fontSize = '2rem';
-      particle.style.zIndex = '9999';
-      particle.style.pointerEvents = 'none';
-      particle.style.transform = 'translate(-50%, -50%)';
-      
-      // כיוון רנדומלי
-      const angle = (Math.random() * 360) * (Math.PI / 180);
-      const distance = 100 + Math.random() * 200;
-      const endX = Math.cos(angle) * distance;
-      const endY = Math.sin(angle) * distance;
-      
-      particle.style.animation = `particleExplosion 2s ease-out forwards`;
-      particle.style.setProperty('--end-x', endX + 'px');
-      particle.style.setProperty('--end-y', endY + 'px');
-      
-      document.body.appendChild(particle);
-      
-      setTimeout(() => {
-        if (document.body.contains(particle)) {
-          document.body.removeChild(particle);
-        }
-      }, 2000);
-    }, i * 30);
-  }
-}
-
-// הודעת חגיגה
-function showCelebrationMessage() {
-  const message = document.createElement('div');
-  message.innerHTML = `
-    <div style="font-size: 3rem; margin-bottom: 1rem;">🎉</div>
-    <div style="font-size: 1.5rem; font-weight: bold;">מזל טוב יהב!</div>
-    <div style="font-size: 1rem; margin-top: 0.5rem;">שתהיה שנה מדהימה!</div>
-  `;
-  
-  message.style.cssText = `
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-    color: white;
-    padding: 2rem 3rem;
-    border-radius: 20px;
-    text-align: center;
-    z-index: 10000;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-    animation: celebrationPulse 3s ease-in-out forwards;
-    font-family: 'Rubik', sans-serif;
-  `;
-  
-  document.body.appendChild(message);
-  
-  setTimeout(() => {
-    if (document.body.contains(message)) {
-      document.body.removeChild(message);
-    }
-  }, 3000);
-}
-
-// הודעת הפתעה
-function showSurpriseMessage() {
-  const surpriseMessages = [
-    "🎁 הפתעה! יהב הכי מדהים! 🎁",
-    "🌟 אתה כוכב בשמיים! 🌟",
-    "🎈 השמחה שלך מדבקת! 🎈",
-    "✨ מאיר את החיים שלנו! ✨"
-  ];
-  
-  const randomMessage = surpriseMessages[Math.floor(Math.random() * surpriseMessages.length)];
-  
-  const message = document.createElement('div');
-  message.textContent = randomMessage;
-  message.style.cssText = `
-    position: fixed;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: linear-gradient(45deg, #ffd93d, #ff6b6b);
-    color: white;
-    padding: 1rem 2rem;
-    border-radius: 50px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    z-index: 10000;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-    animation: surpriseBounce 2s ease-in-out forwards;
-    font-family: 'Rubik', sans-serif;
-  `;
-  
-  document.body.appendChild(message);
-  
-  setTimeout(() => {
-    if (document.body.contains(message)) {
-      document.body.removeChild(message);
-    }
-  }, 2000);
 }
