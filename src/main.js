@@ -298,53 +298,44 @@ async function toggleMusic() {
     return;
   }
   
-  console.log('🎵 סטטוס מוזיקה נוכחי (main.js):', musicPlaying);
-  console.log('🎵 סטטוס מוזיקה נוכחי (musicPlayer):', musicPlayer.isPlaying);
-  console.log('🎵 musicPlayer:', musicPlayer);
+  console.log('🎵 musicPlaying נוכחי:', musicPlaying);
+  console.log('🎵 musicPlayer.isPlaying:', musicPlayer?.isPlaying);
   
-  // השתמש בסטטוס של המחלקה כמקור האמת
-  const isCurrentlyPlaying = musicPlayer.isPlaying;
-  
-  if (!isCurrentlyPlaying) {
-    // הפעלת מוזיקה
+  if (musicPlaying) {
+    // עוצרים מוזיקה
+    console.log('🔇 עוצר מוזיקה...');
+    musicPlayer.stop();
+    musicPlaying = false;
+    musicBtn.textContent = '🎵 מוזיקה 🎵';
+    musicBtn.style.background = 'linear-gradient(45deg, var(--primary-color), var(--secondary-color))';
+    console.log('✅ מוזיקה נעצרה');
+  } else {
+    // מפעילים מוזיקה
+    console.log('🎵 מפעיל מוזיקה...');
     musicBtn.textContent = '🎵 טוען... 🎵';
     musicBtn.disabled = true;
     
-    console.log('🎵 מנסה להפעיל מוזיקה...');
     try {
-      const result = await musicPlayer.play();
-      console.log('🎵 תוצאת הפעלת מוזיקה:', result);
+      const success = await musicPlayer.startPlaying();
       
-      if (result && musicPlayer.isPlaying) {
+      if (success) {
         musicPlaying = true;
         musicBtn.textContent = '🔇 עצור מוזיקה 🔇';
         musicBtn.style.background = 'linear-gradient(45deg, #ff4757, #ff6b6b)';
         playBirthdayAnimation();
-        console.log('✅ מוזיקה הופעלה בהצלחה');
+        console.log('✅ מוזיקה הופעלה');
       } else {
         musicBtn.textContent = '❌ שגיאה במוזיקה';
-        console.error('❌ הפעלת מוזיקה נכשלה');
         musicPlaying = false;
+        console.error('❌ הפעלת מוזיקה נכשלה');
       }
     } catch (error) {
-      console.error('❌ שגיאה בהפעלת מוזיקה:', error);
+      console.error('❌ שגיאה:', error);
       musicBtn.textContent = '❌ שגיאה במוזיקה';
       musicPlaying = false;
     }
     
     musicBtn.disabled = false;
-  } else {
-    // עצירת מוזיקה
-    console.log('🔇 עוצר מוזיקה...');
-    try {
-      musicPlayer.stop();
-      musicPlaying = false;
-      musicBtn.textContent = '🎵 מוזיקה 🎵';
-      musicBtn.style.background = 'linear-gradient(45deg, var(--primary-color), var(--secondary-color))';
-      console.log('✅ מוזיקה נעצרה');
-    } catch (error) {
-      console.error('❌ שגיאה בעצירת מוזיקה:', error);
-    }
   }
 }
 

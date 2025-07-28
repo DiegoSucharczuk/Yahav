@@ -8,6 +8,12 @@ class BirthdayMusicPlayer {
     this.onSongEnded = null; // מטפל לסיום שיר
     this.retryCount = 0; // מונה ניסיונות חוזרים
     this.maxRetries = 3; // מקסימום ניסיונות
+    this.isMobile = this.detectMobile(); // זיהוי מובייל
+  }
+  
+  // זיהוי אם זה מובייל
+  detectMobile() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   }
 
   // גילוי קבצי מוזיקה בתיקיה
@@ -102,37 +108,93 @@ class BirthdayMusicPlayer {
     try {
       console.log('🎵 מנגן שיר:', songPath);
       this.currentAudio = new Audio(songPath);
-      this.currentAudio.volume = this.volume;
+      
+      // הגדרת volume מותאמת למובייל
+      if (this.isMobile) {
+        this.currentAudio.volume = Math.min(this.volume, 0.8); // נמוך יותר במובייל
+        console.log('📱 מובייל זוהה - volume מותאם:', this.currentAudio.volume);
+      } else {
+        this.currentAudio.volume = this.volume;
+      }
+      
       this.currentAudio.loop = false;
+      
+      // הגדרות מיוחדות למובייל
+      this.currentAudio.preload = 'auto';
+      if (!this.isMobile) {
+        this.currentAudio.crossOrigin = 'anonymous';
+      }
+      
+      // טיפול בהשהיות ובאגר
+      this.currentAudio.addEventListener('canplaythrough', () => {
+        console.log('🎵 אודיו מוכן לניגון');
+      });
+      
+      this.currentAudio.addEventListener('loadstart', () => {
+        console.log('🎵 התחלת טעינת אודיו');
+      });
+      
+      this.currentAudio.addEventListener('progress', () => {
+        console.log('🎵 התקדמות טעינה');
+      });
       
       // כשהשיר נגמר, נניגן אחר (עם הגנה מפני שגיאות)
       this.onSongEnded = async () => {
         console.log('🎵 שיר נגמר, מחליף לשיר חדש...');
         if (this.isPlaying) {
+          const waitTime = this.isMobile ? 2000 : 1000; // זמן המתנה ארוך יותר במובייל
           setTimeout(() => {
             this.playRandomSong().catch(err => {
               console.error('❌ שגיאה בהחלפת שיר:', err);
               this.isPlaying = false;
             });
-          }, 500); // המתנה קצרה בין שירים
+          }, waitTime);
         }
       };
       
       this.currentAudio.addEventListener('ended', this.onSongEnded);
       
-      // הוספת מטפל שגיאות
+      // הוספת מטפל שגיאות מורחב
       this.currentAudio.addEventListener('error', (e) => {
         console.error('❌ שגיאה בניגון:', e);
+        console.error('❌ פרטי שגיאה:', e.target.error);
         this.isPlaying = false;
-        // ניסיון לנגן שיר אחר
+        // ניסיון לנגן שיר אחר אחרי זמן ארוך יותר
         setTimeout(() => {
           if (this.isPlaying) {
             this.playRandomSong().catch(err => console.error('❌ שגיאה בחזרה על ניגון:', err));
           }
-        }, 1000);
+        }, 2000);
+      });
+      
+      // מטפל להשהיות
+      this.currentAudio.addEventListener('stalled', () => {
+        console.log('⏸️ אודיו נתקע, מנסה להמשיך...');
+      });
+      
+      this.currentAudio.addEventListener('waiting', () => {
+        console.log('⏳ ממתין לנתונים נוספים...');
       });
 
-      await this.currentAudio.play();
+      // ניסיון ניגון עם זמן המתנה
+      await new Promise((resolve, reject) => {
+        const playPromise = this.currentAudio.play();
+        
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              console.log('✅ ניגון התחיל בהצלחה');
+              resolve();
+            })
+            .catch((error) => {
+              console.error('❌ שגיאה בהתחלת ניגון:', error);
+              reject(error);
+            });
+        } else {
+          // דפדפנים ישנים
+          resolve();
+        }
+      });
       this.isPlaying = true;
       console.log('✅ שיר מתחיל לנגן בהצלחה');
       return true;
@@ -143,7 +205,30 @@ class BirthdayMusicPlayer {
     }
   }
 
-  // התחלת מוזיקה
+  // פונקציה פשוטה להתחלת ניגון
+  async startPlaying() {
+    console.log('🎵 startPlaying() נקרא');
+    
+    // וידוא שאין מוזיקה פועלת
+    if (this.isPlaying) {
+      console.log('🎵 מוזיקה כבר פועלת');
+      return false;
+    }
+    
+    try {
+      const hasMusic = await this.discoverMusic();
+      if (hasMusic) {
+        const result = await this.playRandomSong();
+        return result;
+      }
+      return false;
+    } catch (error) {
+      console.error('❌ שגיאה ב-startPlaying:', error);
+      return false;
+    }
+  }
+
+  // התחלת מוזיקה (פונקציה ישנה - נשמרת לתאימות)
   async play() {
     console.log('🎵 BirthdayMusicPlayer.play() נקרא');
     console.log('🎵 isPlaying בתחילה:', this.isPlaying);
