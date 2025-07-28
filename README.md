@@ -2,7 +2,7 @@
 
 אתר ברכה אינטראקטיבי מיוחד לחגיגת יום הולדתו ה-22 של יהב!
 
-🌐 **לינק לאתר החי:** [USERNAME.github.io/Yahav](https://USERNAME.github.io/Yahav)
+🌐 **לינק לאתר החי:** [diegosucharczuk.github.io/Yahav](https://diegosucharczuk.github.io/Yahav)
 
 ## ✨ תכונות מתקדמות
 
